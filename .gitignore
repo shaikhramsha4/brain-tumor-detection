@@ -1,0 +1,17 @@
+
+# Python virtual environment
+.venv/
+
+# Python cache files
+__pycache__/
+*.py[cod]
+
+# Environment variables and secrets
+.env
+
+# Dataset - keep it on your computer, not GitHub
+brisc2025/
+
+# Uploaded MRI images - do not upload them to GitHub
+static/uploads/*
+!static/uploads/.gitkeep

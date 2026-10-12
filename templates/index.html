@@ -1,0 +1,404 @@
+
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <meta name="theme-color" content="#f8fafc">
+  <title>NeuroScan | MRI Classification</title>
+  <style>
+    :root {
+      --ink: #172b4d;
+      --muted: #66758b;
+      --blue: #356df3;
+      --line: #e2e8f0;
+      --surface: #ffffff;
+      --background: #f7f9fc;
+    }
+
+    * { box-sizing: border-box; }
+
+    body {
+      margin: 0;
+      color: var(--ink);
+      background: var(--background);
+      font-family: Inter, ui-sans-serif, system-ui, -apple-system,
+                   "Segoe UI", sans-serif;
+    }
+
+    nav {
+      height: 72px;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      gap: 16px;
+      padding: 0 max(5%, calc((100% - 1180px) / 2));
+      background: white;
+      border-bottom: 1px solid var(--line);
+    }
+
+    .brand {
+      display: flex;
+      align-items: center;
+      gap: 12px;
+      font-size: 19px;
+      font-weight: 750;
+      letter-spacing: -0.5px;
+    }
+
+    .logo {
+      width: 38px;
+      height: 38px;
+      display: grid;
+      place-items: center;
+      color: white;
+      background: var(--blue);
+      border-radius: 12px;
+      font-size: 20px;
+    }
+
+    nav a {
+      color: var(--muted);
+      text-decoration: none;
+      font-size: 14px;
+    }
+
+    main {
+      width: min(1180px, 90%);
+      margin: 42px auto;
+    }
+
+    .hero {
+      padding: 36px;
+      border: 1px solid #e1eaff;
+      border-radius: 24px;
+      background: linear-gradient(120deg, #edf4ff, #ffffff 75%);
+      margin-bottom: 26px;
+    }
+
+    .eyebrow {
+      color: var(--blue);
+      font-size: 12px;
+      font-weight: 800;
+      letter-spacing: 1.5px;
+      text-transform: uppercase;
+    }
+
+    h1 {
+      margin: 12px 0;
+      font-size: clamp(30px, 4vw, 45px);
+      line-height: 1.13;
+      letter-spacing: -1.8px;
+    }
+
+    .hero p {
+      max-width: 650px;
+      color: var(--muted);
+      line-height: 1.7;
+      margin-bottom: 0;
+    }
+
+    .layout {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 24px;
+      align-items: start;
+    }
+
+    .card {
+      min-width: 0;
+      padding: 26px;
+      background: var(--surface);
+      border: 1px solid var(--line);
+      border-radius: 20px;
+      box-shadow: 0 8px 30px rgba(26, 48, 80, .035);
+    }
+
+    h2 {
+      margin: 0 0 8px;
+      font-size: 21px;
+      letter-spacing: -.5px;
+    }
+
+    .sub {
+      margin: 0 0 22px;
+      color: var(--muted);
+      font-size: 14px;
+      line-height: 1.6;
+    }
+
+    .dropzone {
+      padding: 28px 18px;
+      border: 1.5px dashed #b9c9e2;
+      border-radius: 14px;
+      background: #fbfdff;
+      text-align: center;
+    }
+
+    .upload-icon {
+      font-size: 31px;
+      margin-bottom: 12px;
+    }
+
+    input[type=file] {
+      display: block;
+      width: 100%;
+      margin: 18px 0 12px;
+      color: var(--muted);
+      font-size: 13px;
+    }
+
+    .hint {
+      color: var(--muted);
+      font-size: 12px;
+      line-height: 1.7;
+    }
+
+    button {
+      width: 100%;
+      padding: 14px 18px;
+      border: 0;
+      border-radius: 11px;
+      background: var(--blue);
+      color: white;
+      font-size: 15px;
+      font-weight: 700;
+      cursor: pointer;
+      margin-top: 18px;
+      transition: background .2s, transform .2s;
+    }
+
+    button:hover { background: #2458d8; }
+    button:active { transform: scale(.99); }
+    button:disabled { opacity: .65; cursor: wait; }
+
+    .result-label {
+      display: inline-block;
+      padding: 6px 10px;
+      border-radius: 999px;
+      background: #eef4ff;
+      color: #315ed3;
+      font-size: 12px;
+      font-weight: 750;
+    }
+
+    .prediction {
+      margin-top: 18px;
+      padding: 20px;
+      border: 1px solid #dce7fb;
+      border-radius: 15px;
+      background: #f8faff;
+    }
+
+    .prediction h3 {
+      margin: 12px 0 6px;
+      font-size: 26px;
+      overflow-wrap: anywhere;
+    }
+
+    .confidence {
+      color: var(--muted);
+      font-size: 14px;
+      margin-top: 16px;
+    }
+
+    .preview {
+      display: block;
+      width: 100%;
+      max-height: 330px;
+      object-fit: contain;
+      background: #f1f5f9;
+      border: 1px solid var(--line);
+      border-radius: 12px;
+      margin-top: 18px;
+    }
+
+    .notice {
+      padding: 15px 17px;
+      margin-top: 20px;
+      border: 1px solid #f1dfb3;
+      border-radius: 12px;
+      background: #fffbf0;
+      color: #76551a;
+      font-size: 12px;
+      line-height: 1.7;
+    }
+
+    .error {
+      padding: 13px;
+      border-radius: 10px;
+      background: #fff1f2;
+      color: #b42335;
+      font-size: 14px;
+      line-height: 1.6;
+      margin-top: 16px;
+    }
+
+    .features {
+      display: grid;
+      grid-template-columns: repeat(3, 1fr);
+      gap: 14px;
+      margin-top: 24px;
+    }
+
+    .feature {
+      padding: 19px;
+      background: white;
+      border: 1px solid var(--line);
+      border-radius: 15px;
+    }
+
+    .feature strong {
+      display: block;
+      margin-bottom: 7px;
+      font-size: 14px;
+    }
+
+    .feature span {
+      color: var(--muted);
+      font-size: 12px;
+      line-height: 1.6;
+    }
+
+    footer {
+      padding: 28px 5%;
+      border-top: 1px solid var(--line);
+      color: var(--muted);
+      text-align: center;
+      font-size: 12px;
+      line-height: 1.8;
+    }
+
+    @media (max-width: 760px) {
+      main { width: 92%; margin: 24px auto; }
+      nav { padding: 0 4%; height: 64px; }
+      nav a { display: none; }
+      .hero { padding: 25px 22px; }
+      .layout { grid-template-columns: 1fr; }
+      .card { padding: 21px; }
+      .features { grid-template-columns: 1fr; }
+    }
+  </style>
+</head>
+
+<body>
+  <nav>
+    <div class="brand">
+      <div class="logo" aria-hidden="true">N</div>
+      <span>NeuroScan</span>
+    </div>
+    <a href="#about">About this project</a>
+  </nav>
+
+  <main>
+    <section class="hero">
+      <div class="eyebrow">Deep learning · MRI research prototype</div>
+      <h1>Brain MRI<br>Image Classification</h1>
+      <p>
+        Upload an MRI image to explore how a trained convolutional
+        neural network classifies images into four dataset categories.
+        Designed for learning and academic demonstration.
+      </p>
+    </section>
+
+    <div class="layout">
+      <section class="card">
+        <h2>Analyze an image</h2>
+        <p class="sub">Choose a brain MRI image from your device.</p>
+
+        <form method="POST" enctype="multipart/form-data" id="upload-form">
+          <div class="dropzone">
+            <div class="upload-icon" aria-hidden="true">↑</div>
+            <strong>Select an MRI image</strong>
+            <input
+              type="file"
+              id="mri_image"
+              name="mri_image"
+              accept=".png,.jpg,.jpeg"
+              required
+            >
+            <div class="hint">PNG, JPG or JPEG · Maximum 8 MB</div>
+          </div>
+          <button type="submit" id="analyze-button">Analyze image</button>
+        </form>
+
+        {% if error %}
+          <div class="error" role="alert">{{ error }}</div>
+        {% endif %}
+      </section>
+
+      <section class="card" aria-live="polite">
+        <h2>Prediction result</h2>
+        <p class="sub">Your model's output will appear here.</p>
+
+        {% if prediction %}
+          <span class="result-label">Analysis complete</span>
+          <div class="prediction">
+            <div class="hint">Predicted dataset class</div>
+            <h3>{{ prediction|replace('_', ' ')|title }}</h3>
+            <div class="confidence">
+              Model confidence score:
+              <strong>{{ "%.2f"|format(confidence) }}%</strong>
+            </div>
+          </div>
+          {% if image_url %}
+            <img
+              class="preview"
+              src="{{ url_for('static', filename=image_url) }}"
+              alt="Uploaded MRI image"
+            >
+          {% endif %}
+        {% else %}
+          <div class="dropzone">
+            <div class="upload-icon" aria-hidden="true">◎</div>
+            <strong>Ready for your image</strong>
+            <p class="hint">Choose an image and select Analyze image to see a result.</p>
+          </div>
+        {% endif %}
+
+        <div class="notice">
+          <strong>Educational use only.</strong> This prototype is not a
+          medical diagnostic tool. A model confidence score is not a
+          validated probability of disease. Do not use its output for
+          healthcare decisions; consult qualified medical professionals.
+        </div>
+      </section>
+    </div>
+
+    <section class="features" id="about">
+      <div class="feature">
+        <strong>01 · CNN model</strong>
+        <span>A convolutional neural network trained for MRI image classification.</span>
+      </div>
+      <div class="feature">
+        <strong>02 · Four classes</strong>
+        <span>Glioma, meningioma, no tumor and pituitary dataset categories.</span>
+      </div>
+      <div class="feature">
+        <strong>03 · Research prototype</strong>
+        <span>Built with Python, Flask and TensorFlow for academic learning.</span>
+      </div>
+    </section>
+  </main>
+
+  <footer>
+    NeuroScan · Student machine-learning project<br>
+    Not intended for clinical use.
+  </footer>
+
+  <script>
+    const form = document.getElementById("upload-form");
+    const input = document.getElementById("mri_image");
+    const button = document.getElementById("analyze-button");
+
+    form.addEventListener("submit", function (event) {
+      if (!input.files || !input.files.length) {
+        event.preventDefault();
+        return;
+      }
+      button.disabled = true;
+      button.textContent = "Analyzing image…";
+    });
+  </script>
+</body>
+</html>
